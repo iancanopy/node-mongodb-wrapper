@@ -1,7 +1,7 @@
 {
   "name": "mongodb-wrapper",
   "description": "Exactly-like-the-console wrapper for node-mongodb-native",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "author": "i.TV <sean@i.tv>",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   "main": "index",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script -C test.js",
-    "prepublish" : "coffee -c lib/*.coffee"
+    "prepublish": "coffee -c lib/*.coffee"
   },
   "keywords": [
     "mongodb"
@@ -24,8 +24,10 @@
   },
   "dependencies": {
     "mongodb": "1.2.8",
-    "async_testing": "0.3.2",
     "async": "~0.1.22"
+  },
+  "dev-dependencies": {
+    "mocha": "~1.8.1"
   },
   "directories": {
     "lib": "lib"
