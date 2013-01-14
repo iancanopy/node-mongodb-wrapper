@@ -54,7 +54,7 @@ class Cursor extends EventEmitter
     return @
 
   next: (cb) ->
-    @resovle (err, cursor) =>
+    @resolve (err, cursor) =>
       return cb err if err
       cursor.nextObject cb
     return @

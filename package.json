@@ -13,7 +13,8 @@
   },
   "main": "index",
   "scripts": {
-    "test": "node test.js"
+    "test": "mocha --compilers coffee:coffee-script -C test.js",
+    "prepublish" : "coffee -c lib/*.coffee"
   },
   "keywords": [
     "mongodb"

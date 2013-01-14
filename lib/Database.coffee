@@ -38,7 +38,9 @@ class Database extends EventEmitter
 
     # since we conform to uri, we can just use url to parse out pathname (should be db)
     parsed = url.parse @_state.connectionString
-    @_state.dbName = parsed.pathname
+    @_state.dbName = parsed.pathname.replace("/", "")
+    @_state.hostname = parsed.hostname
+    @_state.port = parsed.port
 
   _makeReplConnString: (hosts, dbName, userpass) ->
     prefix = "mongodb://#{userpass}"
@@ -50,6 +52,11 @@ class Database extends EventEmitter
 
   _makeConnString: (host, port, dbName, userpass) ->
     "mongodb://#{userpass}#{host}:#{port}/#{dbName}"
+
+  host: -> @_state.hostname
+  port: -> @_state.port
+  prefix: -> @_state.prefix
+  name: -> @_state.dbName
 
   prefixName: (collName) ->
     return collName if not @_state.prefix
@@ -137,14 +144,17 @@ class Database extends EventEmitter
   addUser: (username, password, cb) ->
     @runCommand "addUser", [username, password], cb
 
-  removeUser: (username, password, cb) ->
-    @runCommand "removeUser", [username, password], cb
+  removeUser: (username, cb) ->
+    @runCommand "removeUser", [username], cb
 
   lastError: (cb) ->
     @runCommand "lastError", cb
 
   eval: (code, params, cb) ->
-    params ||= {}
+    if typeof params == "function"
+      cb = params
+      params ||= {}
+
     @runCommand "eval", [code, params], cb
 
   dropDatabase: (cb) ->
