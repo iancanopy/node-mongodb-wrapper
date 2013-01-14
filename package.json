@@ -23,7 +23,7 @@
     "node": ">= 0.6.0"
   },
   "dependencies": {
-    "mongodb": "1.2.8",
+    "mongodb": "1.2.x",
     "async": "~0.1.22"
   },
   "dev-dependencies": {
