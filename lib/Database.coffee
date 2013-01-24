@@ -15,6 +15,8 @@ class Database extends EventEmitter
     @_state = {}
     @_state.prefix = prefix
     @_state.cbCache = new EventEmitter
+    # we need a few more listeners here, this is mostly okay because we only use "once" instead of on
+    @_state.cbCache.setMaxListeners 100
 
     @_normalizeParams host, port, dbName, username, password
 
@@ -46,9 +48,9 @@ class Database extends EventEmitter
     prefix = "mongodb://#{userpass}"
     parts = []
     for host in hosts
-      parts.push "#{host.host}:#{host.port}/#{dbName}"
+      parts.push "#{host.host}:#{host.port}"
 
-    return prefix + parts.join(",")
+    return prefix + parts.join(",") + "/#{dbName}"
 
   _makeConnString: (host, port, dbName, userpass) ->
     "mongodb://#{userpass}#{host}:#{port}/#{dbName}"
