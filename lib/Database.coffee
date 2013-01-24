@@ -130,6 +130,8 @@ class Database extends EventEmitter
       
       @[part] = container
 
+    # handle the case where have a collection that is singular 
+    container ||= @
     collection = new Collection(@, collName)
     collection.on "error", (err) =>
       @emit "error", err

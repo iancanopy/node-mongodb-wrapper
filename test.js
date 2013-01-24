@@ -656,3 +656,52 @@ describe("backgroundIndex", function() {
     })
   })
 })
+
+
+// new tests with rewrite
+//
+
+function saveAndFind(coll, cb) {
+  coll.save({test: "doc"}, function(err, doc) {
+    assert.ifError(err)
+    assert(doc)
+    coll.findOne({}, function(err, ret) {
+      assert.ifError(err)
+      assert(ret)
+      coll.drop(function(err) {
+        assert.ifError(err)
+        cb()
+      })
+    })
+  })
+}
+
+describe("single collection name", function() {
+  it("should support collects with a single name", function(done) {
+    var db = mongo.db('localhost', 27017, 'test')
+    db.collection('singleCollection')
+
+    assert(db.singleCollection)
+    saveAndFind(db.singleCollection, done)
+  })
+})
+
+describe("conecting", function() {
+  it("should support mongodb:// style connection strings - basic", function(done) {
+    var db = mongo.db("mongodb://localhost/test")
+    db.collection("connecting")
+    saveAndFind(db.connecting, done)
+  })
+
+  it("should support a more fancy mongodb connection string, including auth", function(done) {
+    var db = mongo.db("mongodb://localhost/test")
+    db.addUser('user', 'pass', function(err) {
+      assert.ifError(err)
+
+      var db2 = mongo.db("mongodb://user:pass@localhost/test")
+      db2.collection("authed")
+      saveAndFind(db2.authed, done)
+    })
+  })
+})
+
