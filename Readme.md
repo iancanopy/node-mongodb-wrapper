@@ -6,19 +6,23 @@
 
 A wrapper for [node-mongodb-native][node-mongodb-native] as close as possible to the [native javascript driver][javascript driver]. Why learn two interfaces?
 
-Yes, we know other people are doing the same thing. This one has been easier to use. 
+
+## History
+
+v1.0.0 - A complete rewrite of the driver that now uses mongoclient. The interface is generally the same, but all the messiness
+of reconnecting has been removed, as thats transparently handeled by the mongo client. If you see any breakage, please open an issue!
 
 ## Features
 
 1. Minimal interface closely matching the command-line driver: [http://www.mongodb.org/display/DOCS/Manual][docs]
-2. Lazy open/close of connections
+2. Lazy open/close of connections (now handeled by the low level node-mongodb-native)
 3. Most features of [node-mongodb-native][node-mongodb-native]
 
 ## Installation
 
-<pre>
+```
   npm install mongodb-wrapper
-</pre>
+```
 
 ## Usage
 
@@ -26,7 +30,7 @@ Yes, we know other people are doing the same thing. This one has been easier to 
 2. You have to provide callbacks on "actionable" calls (`toArray`, `count`, but not `find`)
 3. Otherwise, just like the native [javascript driver][javascript driver]
 
-<pre>
+``` JavaScript
 	var mongo = require('mongodb-wrapper')
 	var db = mongo.db('localhost', 27017, 'test')
 	db.collection('posts')
@@ -38,7 +42,7 @@ Yes, we know other people are doing the same thing. This one has been easier to 
 			})
 		})
 	})      
-</pre>
+```
 
 For more examples, [please look at the test suite](https://github.com/idottv/node-mongodb-wrapper/blob/master/lib/mongodb-wrapper.js)
 
@@ -48,9 +52,12 @@ Remember the guiding principle: the syntax exactly matches the [command-line dri
 
 #### Connecting
 
-`mongo.db(host, port, dbname, [prefix], [username], [password])` - returns an unopened database object. 
+There are lots of ways to open up a database connection
+`mongo.db(mongodbConnectionString)` - returns a database object, for details on the connection string see [mongodb docs](http://mongodb.github.com/node-mongodb-native/driver-articles/mongoclient.html)
+* NOTE: this mode does not support a prefix!
+`mongo.db(host, port, dbname, [prefix], [username], [password])` - returns a database project
 
-* If prefix is specified all collections will use the prefix in mongo, but you refer to them without the prefix in node. 
+* If prefix is specified all collections will use the prefix in mongo, but you refer to them without the prefix in node.
 * If username and password are specified, it will attempt to authenticate. 
 
 `db.collection(name)` - Returns a `Collection` object. Also creates `db[name]` so you can do this:
@@ -142,6 +149,8 @@ mongo.db(hostsArray, opts, dbname, [prefix], [username], [password])
 `cursor.toArray(cb)`
 
 `cursor.count(cb)`
+
+`cursor.getRawCursor` - retrieves a raw mongodb-native cursor, so you can do things like cursor streams, and other fancy things not supported
 
 ### Useful Exports
 
