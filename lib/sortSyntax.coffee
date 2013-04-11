@@ -2,7 +2,7 @@
 module.exports = (naturalMongoSyntax) ->
 
   sort = []
-  for field, orderNum in naturalMongoSyntax
+  for field, orderNum of naturalMongoSyntax
     sort.push [field, orderNum]
 
   return sort
