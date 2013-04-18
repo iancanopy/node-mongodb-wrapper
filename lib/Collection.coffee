@@ -20,7 +20,7 @@ class Collection extends EventEmitter
         return @emit "error", err if err
 
         @state = CONN_OPEN
-				@_collection = collection
+        @_collection = collection
         @emit "ready"
         @drainQueue()
 
@@ -119,7 +119,7 @@ class Collection extends EventEmitter
     fields = options.fields || {}
     delete options.query
     delete options.sort
-    delete options.update    	
+    delete options.update
     @runCommand "findAndModify", [query, sort, update, options], cb
 
   find: (selector, fields) ->
@@ -145,7 +145,7 @@ class Collection extends EventEmitter
     reduce = options.reduce || options['$reduce'] || noop
     cond = options.cond || {}
     key = options.key || {}
-    initial = options.intial || {} 
+    initial = options.intial || {}
     @runCommand "group", [key, cond, initial, reduce], cb
 
   mapReduce: (map, reduce, options, cb) ->
@@ -158,5 +158,5 @@ class Collection extends EventEmitter
       query = null
 
     @runCommand "distinct", [key, query], cb
-    
+
 module.exports = Collection
