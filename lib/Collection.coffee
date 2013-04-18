@@ -20,8 +20,8 @@ class Collection extends EventEmitter
         return @emit "error", err if err
 
         @state = CONN_OPEN
+				@_collection = collection
         @emit "ready"
-        @_collection = collection
         @drainQueue()
 
   isOpen: -> @state == CONN_OPEN
