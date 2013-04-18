@@ -327,13 +327,13 @@ describe("failedInsert", function() {
 
 
 describe("finding", function() {
+  function assertError(err) { assert.ifError(err) }
+
   it("should be able to find things", function(done) {
     var collection, db
     db = mongo.db("localhost", 27017, "test")
     db.collection('mongo.finding')
     collection = db.mongo.finding
-    
-    function assertError(err) { assert.ifError(err) }
 
     collection.drop(function(err) {
       var cursor, eachIndex, ids
@@ -378,6 +378,34 @@ describe("finding", function() {
 
           cursor.next(function(err, doc) {
             assert.equal(doc._id, "B")
+            done()
+          })
+        })
+      })
+    })
+  })
+
+  it("should be able to sort the findings", function(done) {
+    var collection, db
+    db = mongo.db("localhost", 27017, "test")
+    db.collection('mongo.finding')
+    collection = db.mongo.finding
+
+    collection.drop(function(err) {
+      var cursor, eachIndex, ids
+      if (err) throw err
+
+      collection.save({ _id: "A", color: "red", size: 8 }, assertError)
+      collection.save({ _id: "B", color: "red", size: 6 }, assertError)
+      collection.save({ _id: "C", color: "blue", size: 5 }, assertError)
+      collection.save({ _id: "D", color: "blue", size: 4 }, function(err) {
+        collection.find({}, {size: 1}).sort({size: 1}).limit(1).toArray(function(err, docs) {
+          if (err) throw err
+          assert.equal(docs[0].size, 4, "found the wrong document. Should have been D " + (util.inspect(docs)))
+
+          collection.find({}, {size: 1}).sort({size: -1}).limit(1).toArray(function(err, docs) {
+            if (err) throw err
+            assert.equal(docs[0].size, 8, "found the wrong document. Should have been A " + (util.inspect(docs)))
             done()
           })
         })
